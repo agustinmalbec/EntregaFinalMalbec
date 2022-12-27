@@ -40,8 +40,7 @@ function menu() {
     let item, cantidad, salir, opcion
     console.log("MENU")
     do {
-        console.log("Opcion 1 = Cargar productos, Opcion 2 = Opcion de pago, Opcion 3 = Ver Carrito, Opcion 4 = Ver el total, Opcion 5 = Salir")
-        opcion = parseInt(prompt())
+        opcion = parseInt(prompt("Opcion 1 = Cargar productos, Opcion 2 = Opcion de pago, Opcion 3 = Ver Carrito, Opcion 4 = Ver el total, Opcion 5 = Salir"))
         switch (opcion) {
             case 1:
                 do {
