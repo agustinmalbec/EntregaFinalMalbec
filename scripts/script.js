@@ -1,24 +1,24 @@
 class Category {
   constructor(id = 0, name = "No definido") {
-      this.id = id
-      this.name = name
+    this.id = id
+    this.name = name
   }
 
   toString() {
-      return this.name
+    return this.name
   }
 }
 
 class Product {
   constructor(id = 0, name = "No definido", price = 0, category = null) {
-      this.id = id
-      this.name = name
-      this.price = price
-      this.category = category
+    this.id = id
+    this.name = name
+    this.price = price
+    this.category = category
   }
 
   toString() {
-      return this.name
+    return this.name
   }
 }
 
@@ -49,8 +49,8 @@ let totalPrice = document.getElementById("precioTotal")
 
 document.addEventListener("DOMContentLoaded", () => {
   if (localStorage.getItem("shoppingCart")) {
-      shoppingCart = JSON.parse(localStorage.getItem("shoppingCart"))
-      cartRefresh()
+    shoppingCart = JSON.parse(localStorage.getItem("shoppingCart"))
+    cartRefresh()
   }
 })
 
@@ -66,10 +66,10 @@ products.forEach((product) => {
 `
   container.appendChild(div)
 
-  let boton = document.getElementById(`agregar${product.id}`)
+  let button = document.getElementById(`agregar${product.id}`)
 
-  boton.addEventListener("click", () => {
-      addToCart(product.id)
+  button.addEventListener("click", () => {
+    addToCart(product.id)
   })
 })
 
@@ -96,15 +96,15 @@ empyButton.addEventListener("click", () => {
 function cartRefresh() {
   cartContainer.innerHTML = ""
   shoppingCart.forEach((prod) => {
-      let div = document.createElement("div")
-      div.innerHTML = `
+    let div = document.createElement("div")
+    div.innerHTML = `
       <p>${prod.name}</p>
       <p>Precio:$${prod.price}</p>
       <button onclick="deleteFromCart(${prod.id})">X</button>
       `
-      cartContainer.appendChild(div)
+    cartContainer.appendChild(div)
 
-      localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart))
+    localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart))
   })
   totalPrice.innerText = shoppingCart.reduce((ac, prod) => ac + prod.price, 0)
 }
