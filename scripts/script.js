@@ -1,111 +1,110 @@
-const baseDeDatos = [
-    {
-        id: 1,
-        nombre: "Teclado",
-        precio: 1000,
-    },
-    {
-        id: 2,
-        nombre: "Monitor",
-        precio: 5000,
-    },
-    {
-        id: 3,
-        nombre: "MousePad",
-        precio: 500,
-    },
-    {
-        id: 4,
-        nombre: "Auriculares",
-        precio: 3000,
-    }
-]
+class Category {
+  constructor(id = 0, name = "No definido") {
+      this.id = id
+      this.name = name
+  }
 
-alert("Si su compra supera los $20000 pesos obtiene un 25% OFF")
-
-let carrito = []
-let total = 0
-
-// Agregar items al carrito
-
-function agregarItem(item, cantidad) {
-    for (let index = 0; index < cantidad; index++) {
-        carrito.push(baseDeDatos[item])
-    }
+  toString() {
+      return this.name
+  }
 }
 
-// Menu
+class Product {
+  constructor(id = 0, name = "No definido", price = 0, category = null) {
+      this.id = id
+      this.name = name
+      this.price = price
+      this.category = category
+  }
 
-function menu() {
-    let item, cantidad, salir, opcion
-    console.log("MENU")
-    do {
-        opcion = parseInt(prompt("Opcion 1 = Cargar productos, Opcion 2 = Opcion de pago, Opcion 3 = Ver Carrito, Opcion 4 = Ver el total, Opcion 5 = Salir"))
-        switch (opcion) {
-            case 1:
-                do {
-                    alert("Elija el producto")
-                    item = prompt("Producto 1 = Teclado, Producto 2 = Monitor, Producto 3 = MousePad, Producto 4 = Auriculares")
-                    cantidad = prompt("Ingrese la cantidad")
-                    agregarItem(item - 1, cantidad)
-                    salir = prompt("Desea agregar otro producto? s/n")
-                } while (salir == "s")
-                break
-            case 2:
-                calcularCarrito()
-                metodoDePago()
-                break
-            case 3:
-                verCarrito()
-                break
-            case 4:
-                descuento()
-                break
-        }
-    } while (opcion != 5)
+  toString() {
+      return this.name
+  }
 }
 
-// Funciones del carrito carrito
+// Definicion categorias
 
-function calcularCarrito() {
-    for (let index = 0; index < carrito.length; index++) {
-        total += carrito[index].precio
-    }
-    return total
+let keyboardCategory = new Category(1, "Teclados")
+let displayCategory = new Category(2, "Pantallas")
+let accessoriesCategory = new Category(3, "Accesorios")
+let soundCategory = new Category(4, "Sonido")
+
+// Definicion productos
+
+let products = []
+
+products.push(new Product(1, "Teclado", 1000, keyboardCategory))
+products.push(new Product(2, "Monitor", 5000, displayCategory))
+products.push(new Product(3, "MousePad", 500, accessoriesCategory))
+products.push(new Product(4, "Auriculares", 3000, soundCategory))
+
+let shoppingCart = []
+
+let cartContainer = document.getElementById("carritoContenedor")
+let container = document.getElementById("contenedor")
+let empyButton = document.getElementById("vaciarCarrito")
+let totalPrice = document.getElementById("precioTotal")
+
+// Almacenamiento local
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (localStorage.getItem("shoppingCart")) {
+      shoppingCart = JSON.parse(localStorage.getItem("shoppingCart"))
+      cartRefresh()
+  }
+})
+
+// Creador de productos
+
+products.forEach((product) => {
+  let div = document.createElement("div")
+  div.classList.add("product")
+  div.innerHTML = `
+<h3>${product.name}(${product.category})</h3>
+<p>$${product.price}</p>
+<button id="agregar${product.id}">Agregar al carrito</button>
+`
+  container.appendChild(div)
+
+  let boton = document.getElementById(`agregar${product.id}`)
+
+  boton.addEventListener("click", () => {
+      addToCart(product.id)
+  })
+})
+
+// Actualicion de carrito
+
+let addToCart = (prodId) => {
+  let item = products.find((prod) => prod.id === prodId)
+  shoppingCart.push(item)
+  cartRefresh()
 }
 
-function verCarrito() {
-    const lista = carrito.map(carrito => carrito.nombre)
-    console.log(lista)
+let deleteFromCart = (prodId) => {
+  let item = shoppingCart.find((prod) => prod.id === prodId)
+  let indice = shoppingCart.indexOf(item)
+  shoppingCart.splice(indice, 1)
+  cartRefresh()
 }
 
-// Elegir metodo de pago
+empyButton.addEventListener("click", () => {
+  shoppingCart.length = 0
+  cartRefresh()
+})
 
-function metodoDePago() {
-    let opcion;
-    do {
-        opcion = prompt("Elija metodo de pago. Opcion 1: efectivo 10% OFF!!. Opcion 2: 3 cuotas sin interes. Opcion 3: 12 cuotas un 10% de recargo")
-        switch (parseInt(opcion)) {
-            case 1:
-                return total -= total * 10 / 100
-            case 2:
-                return total
-            case 3:
-                return total += total * 10 / 100
-            default:
-                console.log("Metodo de pago no valido, ingreselo nuevamente")
-        }
-    } while (opcion > 3 || opcion <= 0)
+function cartRefresh() {
+  cartContainer.innerHTML = ""
+  shoppingCart.forEach((prod) => {
+      let div = document.createElement("div")
+      div.innerHTML = `
+      <p>${prod.name}</p>
+      <p>Precio:$${prod.price}</p>
+      <button onclick="deleteFromCart(${prod.id})">X</button>
+      `
+      cartContainer.appendChild(div)
+
+      localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart))
+  })
+  totalPrice.innerText = shoppingCart.reduce((ac, prod) => ac + prod.price, 0)
 }
-
-// Funcion que muestra el total
-
-function descuento() {
-    if (total > 20000) {
-        console.log("El total a pagar es: " + parseInt(total - total * 25 / 100))
-    } else {
-        console.log("El total a pagar es: " + parseInt(total))
-    }
-}
-
-menu()
