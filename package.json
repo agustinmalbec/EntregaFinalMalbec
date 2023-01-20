@@ -1,0 +1,24 @@
+{
+  "name": "proyectojavascript",
+  "version": "1.0.0",
+  "description": "proyecto para el curso de javascript",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agustinmalbec/PreEntrega3Malbec.git"
+  },
+  "author": "francisco agustin malbec",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/agustinmalbec/PreEntrega3Malbec/issues"
+  },
+  "homepage": "https://github.com/agustinmalbec/PreEntrega3Malbec#readme",
+  "dependencies": {
+    "@sweetalert2/themes": "^5.0.15",
+    "bootstrap": "^5.3.0-alpha1",
+    "bootstrap-icons": "^1.10.3"
+  }
+}

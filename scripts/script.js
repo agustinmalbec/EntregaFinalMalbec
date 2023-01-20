@@ -1,110 +1,149 @@
-class Category {
-  constructor(id = 0, name = "No definido") {
-    this.id = id
-    this.name = name
-  }
-
-  toString() {
-    return this.name
-  }
-}
-
-class Product {
-  constructor(id = 0, name = "No definido", price = 0, category = null) {
-    this.id = id
-    this.name = name
-    this.price = price
-    this.category = category
-  }
-
-  toString() {
-    return this.name
-  }
-}
-
-// Definicion categorias
-
-let keyboardCategory = new Category(1, "Teclados")
-let displayCategory = new Category(2, "Pantallas")
-let accessoriesCategory = new Category(3, "Accesorios")
-let soundCategory = new Category(4, "Sonido")
-
-// Definicion productos
-
-let products = []
-
-products.push(new Product(1, "Teclado", 1000, keyboardCategory))
-products.push(new Product(2, "Monitor", 5000, displayCategory))
-products.push(new Product(3, "MousePad", 500, accessoriesCategory))
-products.push(new Product(4, "Auriculares", 3000, soundCategory))
-
 let shoppingCart = []
 
-let cartContainer = document.getElementById("carritoContenedor")
-let container = document.getElementById("contenedor")
-let empyButton = document.getElementById("vaciarCarrito")
-let totalPrice = document.getElementById("precioTotal")
+const cartContainer = document.getElementById("carritoContenedor")
+const container = document.getElementById("contenedor")
+const emptyButton = document.getElementById("vaciarCarrito")
+const totalPrice = document.getElementById("precioTotal")
 
 // Almacenamiento local
 
 document.addEventListener("DOMContentLoaded", () => {
-  if (localStorage.getItem("shoppingCart")) {
-    shoppingCart = JSON.parse(localStorage.getItem("shoppingCart"))
-    cartRefresh()
-  }
+  shoppingCart = JSON.parse(localStorage.getItem("shoppingCart")) || []
+  cartRefresh()
 })
+
+function saveStorage() {
+  localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart))
+}
+
+// Recuperar productos
+
+fetch("../data/data.json")
+  .then((response) => {
+    return response.json()
+  })
+  .then((json) => {
+    getProducts(json)
+  })
 
 // Creador de productos
 
-products.forEach((product) => {
-  let div = document.createElement("div")
-  div.classList.add("product")
-  div.innerHTML = `
-<h3>${product.name}(${product.category})</h3>
-<p>$${product.price}</p>
-<button id="agregar${product.id}">Agregar al carrito</button>
-`
-  container.appendChild(div)
+function getProducts(products) {
+  products.forEach((product) => {
+    const div = document.createElement("div")
+    div.classList.add("card")
+    div.innerHTML = `
+      <img src="${product.img}" class="card-img-top" alt="">
+      <div class="card-body">
+      <h3 class="card-title">${product.name}</h3>
+      <p>Categoria: ${product.category.name}</p>
+        <p>$${product.price}</p>
+        <button id="agregar${product.id}" class="btn btn-secondary">Agregar al carrito</button>
+      </div>
+      `
+    container.appendChild(div)
 
-  let button = document.getElementById(`agregar${product.id}`)
+    const button = document.getElementById(`agregar${product.id}`)
 
-  button.addEventListener("click", () => {
-    addToCart(product.id)
+    button.addEventListener("click", () => {
+      Swal.fire({
+        icon: 'success',
+        title: 'Agregado al carrito',
+        showConfirmButton: false,
+        timer: 1000
+      })
+      addToCart(product.id)
+    })
   })
-})
+  const addToCart = (prodId) => {
+    const exist = shoppingCart.some((prod) => prod.id === prodId)
+    if (exist) {
+      const prod = shoppingCart.map(prod => {
+        if (prod.id === prodId) {
+          prod.quantity++
+        }
+      })
+    } else {
+      const item = products.find((prod) => prod.id === prodId)
+      shoppingCart.push(item)
+    }
+    cartRefresh()
+  }
+}
 
 // Actualicion de carrito
 
-let addToCart = (prodId) => {
-  let item = products.find((prod) => prod.id === prodId)
-  shoppingCart.push(item)
-  cartRefresh()
-}
-
-let deleteFromCart = (prodId) => {
-  let item = shoppingCart.find((prod) => prod.id === prodId)
-  let indice = shoppingCart.indexOf(item)
+const deleteFromCart = (prodId) => {
+  const item = shoppingCart.find((prod) => prod.id === prodId)
+  const indice = shoppingCart.indexOf(item)
   shoppingCart.splice(indice, 1)
   cartRefresh()
 }
 
-empyButton.addEventListener("click", () => {
-  shoppingCart.length = 0
+function deleteCart() {
+  shoppingCart = []
   cartRefresh()
+}
+
+emptyButton.addEventListener("click", () => {
+  deleteCart()
 })
 
 function cartRefresh() {
   cartContainer.innerHTML = ""
   shoppingCart.forEach((prod) => {
-    let div = document.createElement("div")
+    const div = document.createElement("div")
+    div.className = ("productoEnCarrito")
     div.innerHTML = `
       <p>${prod.name}</p>
       <p>Precio:$${prod.price}</p>
-      <button onclick="deleteFromCart(${prod.id})">X</button>
+      <p>Cantidad :${prod.quantity}</p>
+      <button onclick="deleteFromCart(${prod.id})" class="btn btn-danger"><i class="bi bi-trash3"></i></button>
       `
     cartContainer.appendChild(div)
-
-    localStorage.setItem("shoppingCart", JSON.stringify(shoppingCart))
   })
-  totalPrice.innerText = shoppingCart.reduce((ac, prod) => ac + prod.price, 0)
+
+  if (shoppingCart.length === 0) {
+    cartContainer.innerHTML = `
+    <p class="emptyCart">El carrito esta vacio</p>
+    `
+  }
+  saveStorage()
+  totalPrice.innerText = shoppingCart.reduce((ac, prod) => ac + prod.quantity * prod.price, 0)
 }
+
+// Continuar la compra
+
+const finish = document.getElementById("comprar")
+
+finish.addEventListener("click", () => {
+  const spinner = document.getElementById("spinner")
+  spinner.classList.add('d-flex')
+  spinner.classList.remove('d-none')
+
+  setTimeout(() => {
+    spinner.classList.remove('d-flex')
+    spinner.classList.add('d-none')
+    checkOut()
+  }, 2000)
+})
+
+function checkOut() {
+  if (shoppingCart.length > 0) {
+    Swal.fire({
+      icon: 'success',
+      title: 'Su compra fue exitosa!',
+      showConfirmButton: false,
+      timer: 2000
+    })
+    deleteCart()
+  } else {
+    Swal.fire({
+      icon: 'warning',
+      title: 'No hay productos en su carrito',
+      showConfirmButton: false,
+      timer: 2000
+    })
+  }
+}
+

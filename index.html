@@ -1,26 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css">
-    <title>Electro Shop</title>
-  </head>
-  <body>
-    <header>
-      <h1>Electro Shop</h1>
-    </header>
-    <main>
-      <div id="contenedor"></div>
-      <div id="carritoContenedor">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./css/styles.css" />
+  <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="./node_modules/bootstrap-icons/font/bootstrap-icons.css" />
+  <title>Electro Shop</title>
+</head>
+
+<body>
+  <header class="header">
+    <h1>Electro Shop</h1>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#carrito">
+      <i class="bi bi-cart"></i>
+    </button>
+  </header>
+  <main class="main">
+    <div id="contenedor" class="d-flex justify-content-around"></div>
+  </main>
+  <div class="modal fade" id="carrito" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title fs-5" id="exampleModalLabel">Su carrito</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div id="carritoContenedor"></div>
+        <div class="modal-footer">
+          <p>Precio total: $<span id="precioTotal">0</span></p>
+          <button id="comprar" class="btn btn-secondary">
+            Confirmar compra
+          </button>
+          <div class="spinner-border d-none" role="status" id="spinner">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <button id="vaciarCarrito" class="btn btn-secondary">
+            Vaciar carrito
+          </button>
+        </div>
       </div>
-      <div>
-        <p>Precio total: $<span id="precioTotal">0</span></p>
-        <button id="vaciarCarrito">Vaciar carrito</button>
-      </div>
-    </main>
-    <footer></footer>
-    <script src="./scripts/script.js"></script>
-  </body>
+    </div>
+  </div>
+  <footer></footer>
+  <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="./scripts/script.js"></script>
+</body>
+
 </html>

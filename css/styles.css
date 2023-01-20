@@ -1,0 +1,30 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 80px;
+    background-color: black;
+    color: white;
+}
+
+.contenedor {
+    display: block;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.card {
+    width: 18rem;
+    text-align: center;
+}
+
+.productoEnCarrito {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+}
+
+.emptyCart {
+    text-align: center;
+    font-size: 1.5rem;
+    padding: 30px;
+}

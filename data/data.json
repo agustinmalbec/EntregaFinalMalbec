@@ -1,0 +1,46 @@
+[
+  {
+    "id": 1,
+    "name": "Teclado",
+    "price": 1000,
+    "category": {
+      "id": 1,
+      "name": "Teclados"
+    },
+    "quantity": 1,
+    "img": "../assets/img/teclado.jpeg"
+  },
+  {
+    "id": 2,
+    "name": "Monitor",
+    "price": 5000,
+    "category": {
+      "id": 2,
+      "name": "Pantallas"
+    },
+    "quantity": 1,
+    "img": "../assets/img/monitor.jpg"
+  },
+  {
+    "id": 3,
+    "name": "MousePad",
+    "price": 500,
+    "category": {
+      "id": 3,
+      "name": "Accesorios"
+    },
+    "quantity": 1,
+    "img": "../assets/img/mousepad.jpg"
+  },
+  {
+    "id": 4,
+    "name": "Auriculares",
+    "price": 3000,
+    "category": {
+      "id": 4,
+      "name": "Sonido"
+    },
+    "quantity": 1,
+    "img": "../assets/img/auriculares.jpg"
+  }
+]
