@@ -18,13 +18,12 @@ function saveStorage() {
 
 // Recuperar productos
 
-fetch("../data/data.json")
-  .then((response) => {
-    return response.json()
-  })
-  .then((json) => {
-    getProducts(json)
-  })
+const productsRequest = async() => {
+  const resp = await fetch("../data/data.json")
+  const data = await resp.json()
+  getProducts(data)
+}
+productsRequest()
 
 // Creador de productos
 
